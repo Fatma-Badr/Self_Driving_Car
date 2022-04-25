@@ -1,3 +1,39 @@
+def src_bottom_points(img):
+    mid_width=(int)((img.shape[1])/2)
+    print(mid_width)
+    mid_height=(int)((img.shape[0])/2)
+    height=(int)(img.shape[0])
+    width=(int)(img.shape[1])
+    #src bottom left
+    b=False
+    for j in range(height-1,0,-1):
+        for i in range(mid_width,0,-1):            
+#             print(j,i)
+            if img[j][i]==255:
+               b=True
+               break
+        if b==True:
+            break
+    
+    #src bottom right
+    m=False
+    for k in range(height-1,0,-1):
+        for l in range(mid_width,width,1):            
+#                print(k,l)
+            if img[k][l]==255:                
+                m=True
+                break
+        
+        if m==True:
+            break
+        
+                
+        
+                
+    return j,i,k,l        
+    
+
+
 def pipeline (img):
   #convert the image read to RGB
   image=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
