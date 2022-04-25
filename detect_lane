@@ -8,7 +8,6 @@ def src_bottom_points(img):
     b=False
     for j in range(height-1,0,-1):
         for i in range(mid_width,0,-1):            
-#             print(j,i)
             if img[j][i]==255:
                b=True
                break
@@ -19,18 +18,16 @@ def src_bottom_points(img):
     m=False
     for k in range(height-1,0,-1):
         for l in range(mid_width,width,1):            
-#                print(k,l)
             if img[k][l]==255:                
                 m=True
                 break
         
         if m==True:
             break
-        
-                
-        
-                
-    return j,i,k,l        
+
+    return j,i,k,l
+    
+    
  def distance(img):
     #convert image to HSL color space then use s channel
     hsl=cv2.cvtColor(img,cv2.COLOR_RGB2HLS)    
@@ -141,8 +138,11 @@ frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
 #out is used for the main detection video
 #out2 is used for the different pipeline stages video
-out = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),fps, (frame_width,frame_height))
-out2 = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),1, (frame_width,frame_height))
+if debug==0:
+    out = cv2.VideoWriter(path_out+"\outl.avi",cv2.VideoWriter_fourcc('M','J','P','G'),fps, (frame_width,frame_height))
+else:
+    out2 = cv2.VideoWriter(path_out+"\outp.avi",cv2.VideoWriter_fourcc('M','J','P','G'),1, (frame_width,frame_height))
+
 
  
 
@@ -156,12 +156,14 @@ while(cap.isOpened()):
         col_images.append(frame)
         frame_out = pipeline (frame)
         #output 
-        out.write(cv2.cvtColor(frame_out[4], cv2.COLOR_BGR2RGB))
-        out2.write(frame_out[0])
-        out2.write(cv2.cvtColor(frame_out[1], cv2.COLOR_GRAY2RGB))
-        out2.write(cv2.cvtColor(frame_out[2], cv2.COLOR_GRAY2RGB))
-        out2.write(cv2.cvtColor(frame_out[3], cv2.COLOR_GRAY2RGB))
-        out2.write(cv2.cvtColor(frame_out[4], cv2.COLOR_BGR2RGB))
+        if debug==0:
+            out.write(cv2.cvtColor(frame_out[4], cv2.COLOR_BGR2RGB))
+        else:    
+            out2.write(frame_out[0])
+            out2.write(cv2.cvtColor(frame_out[1], cv2.COLOR_GRAY2RGB))
+            out2.write(cv2.cvtColor(frame_out[2], cv2.COLOR_GRAY2RGB))
+            out2.write(cv2.cvtColor(frame_out[3], cv2.COLOR_GRAY2RGB))
+            out2.write(cv2.cvtColor(frame_out[4], cv2.COLOR_BGR2RGB))
         # Press Q on keyboard to exit
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
