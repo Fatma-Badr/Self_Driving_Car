@@ -101,7 +101,8 @@ def pipeline (img):
               newArr[i][j]=b[i][j]
   //tranforming the image back to the original prespective
   output = (cv2.merge((r,g,newArr))).astype(np.uint8)
+  doutput=distance(image)
   # vis = np.concatenate((hls_image,output), axis=0)
   # print("hls",hls_image.shape,"s",s_channel.shape,"sobel",scaled_sobel.shape,"sx_bin",sx_binary.shape,"warped",warped_image.shape,"original",original_image.shape)
-  outputf=cv2.putText(img=output, text=str(0.0092), org=(50, 150), fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=3, color=(0,0, 255),thickness=1)
+  outputf=cv2.putText(img=output, text=doutput, org=(50, 150), fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=1, color=(0,0, 255),thickness=1)
   return [hls_image,s_channel ,scaled_sobel,original_image,outputf]
