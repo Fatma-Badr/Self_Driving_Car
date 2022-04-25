@@ -1,1 +1,4 @@
 def pipeline (img):
+
+
+return [hls_image,s_channel ,scaled_sobel,original_image,outputf]
