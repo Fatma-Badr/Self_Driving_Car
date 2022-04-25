@@ -31,7 +31,27 @@ def src_bottom_points(img):
         
                 
     return j,i,k,l        
-    
+ def distance(img):
+    #convert image to HSL color space then use s channel
+    hsl=cv2.cvtColor(img,cv2.COLOR_RGB2HLS)    
+    s=hsl[:,:,2]
+    # apply canny to s channel
+    edge_image=cv2.Canny(s,200,100)
+    #calling a function to find the bottom source points 
+    lv,lh,rv,rh=src_bottom_points(edge_image)
+    center_of_the_lane=(rh-lh)/2
+    print(center_of_the_lane)
+    center_of_the_car=(img.shape[1])/2
+    print(center_of_the_car)
+    s="vehicle is "
+    if (center_of_the_car-center_of_the_lane)>0:
+        dist=(int)((center_of_the_car-center_of_the_lane)* 0.0002645833*1000)
+        s+=str(dist/1000)+"m right of center"
+    else:
+        dist=(int)(np.absolute((center_of_the_car-center_of_the_lane))* 0.0002645833*1000)
+        s+=str(dist/1000)+"m left of center"
+    print(s)    
+    return s   
 
 
 def pipeline (img):
