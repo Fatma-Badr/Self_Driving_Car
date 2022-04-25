@@ -1,4 +1,51 @@
 def pipeline (img):
+  #convert the image read to RGB
+  image=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+  #convert the image to HLS to get rid of shadows
+  hls_image = cv2.cvtColor(image, cv2.COLOR_RGB2HLS) 
+  h_channel = hls_image[:, :, 0]
+  l_channel = hls_image[:, :, 1]
+  s_channel = hls_image[:, :, 2]
+  #using the sobel filter to get the edges
+  sobelx = cv2.Sobel(l_channel, cv2.CV_64F, 1, 0)      
+  abs_sobel_x = np.absolute(sobelx)
+  #scaling the edges image to a range from 0 to 255
+  scaled_sobel = (255 * ((abs_sobel_x) / np.max(abs_sobel_x))).astype(np.uint8)
+  #thresholding the image to inhance the lane edges
+  sx_thresh = [10, 100]
+  sx_binary = (np.zeros_like(scaled_sobel)).astype(np.uint8)             
+  sx_binary[(scaled_sobel > sx_thresh[0]) & (scaled_sobel < sx_thresh[1])] = 1
+  #creating the bird prespective to highlight the lanes
+  srcPoints = np.array([[300, 670],
+                    [550, 500],
+                    [780, 500],
+                    [1050, 670]]).astype(np.float32)
 
+  dstPoints = np.array([[200, 700],
+                    [200, 50],
+                    [1000, 50],
+                    [1000, 700]]).astype(np.float32)
 
-return [hls_image,s_channel ,scaled_sobel,original_image,outputf]
+  M, Minv = perspectiveTransform(srcPoints, dstPoints)
+
+  warped_image = (warpPerspective(sx_binary, sx_binary.astype(np.float32).shape[1::-1], M)).astype(np.uint8)  #
+  cont = np.array([[200, 700],
+                    [200, 50],
+                    [1000, 50],
+                    [1000, 700]])
+  cv2.fillPoly(warped_image, pts = [cont], color =(255,0,0))
+  original_image = warpPerspective(warped_image, sx_binary.shape[1::-1], Minv).astype(np.uint8) #
+  b,g,r = cv2.split(img)
+  newArr = np.zeros((720, 1280)).astype(np.uint8)
+  for i in range(len(original_image)):
+      for j in range(len(original_image[i])):
+          if original_image[i][j]>=b[i][j]:
+              newArr[i][j]=original_image[i][j]
+          else:
+              newArr[i][j]=b[i][j]
+  //tranforming the image back to the original prespective
+  output = (cv2.merge((r,g,newArr))).astype(np.uint8)
+  # vis = np.concatenate((hls_image,output), axis=0)
+  # print("hls",hls_image.shape,"s",s_channel.shape,"sobel",scaled_sobel.shape,"sx_bin",sx_binary.shape,"warped",warped_image.shape,"original",original_image.shape)
+  outputf=cv2.putText(img=output, text=str(0.0092), org=(50, 150), fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=3, color=(0,0, 255),thickness=1)
+  return [hls_image,s_channel ,scaled_sobel,original_image,outputf]
