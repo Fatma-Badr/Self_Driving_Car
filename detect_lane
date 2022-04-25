@@ -106,3 +106,67 @@ def pipeline (img):
   # print("hls",hls_image.shape,"s",s_channel.shape,"sobel",scaled_sobel.shape,"sx_bin",sx_binary.shape,"warped",warped_image.shape,"original",original_image.shape)
   outputf=cv2.putText(img=output, text=doutput, org=(50, 150), fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=1, color=(0,0, 255),thickness=1)
   return [hls_image,s_channel ,scaled_sobel,original_image,outputf]
+  
+  
+  #read and write video
+  import sys
+
+argv = sys.argv
+path_in = argv[1]
+debug = int(argv[2])
+path_out = argv[3]
+print(path_in)
+print(debug)
+print(path_out)
+
+#collect frames here
+col_images=[]
+
+
+# Create a VideoCapture object and read from input file
+cap = cv2.VideoCapture(path_in)
+fps = cap.get(cv2.CAP_PROP_FPS)
+print(fps)
+print("hi")
+
+ 
+
+# Check if camera opened successfully
+if (cap.isOpened()== False):
+    print("Error opening video file")
+
+ 
+
+frame_width = int(cap.get(3))
+frame_height = int(cap.get(4))
+out = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),fps, (frame_width,frame_height))
+out2 = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),1, (frame_width,frame_height))
+
+ 
+
+while(cap.isOpened()):
+    
+    #read the video frame by frame
+    # Capture frame-by-frame
+    
+    ret, frame = cap.read()
+    if ret == True:
+        col_images.append(frame)
+        frame_out = pipeline (frame)
+        #output 
+        out.write(cv2.cvtColor(frame_out[4], cv2.COLOR_BGR2RGB))
+        # Press Q on keyboard to exit
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            break
+
+    # Break the loop
+    else:
+        break
+
+# When everything done, release
+# the video capture object
+cap.release()
+out.release()
+
+# Closes all the frames
+cv2.destroyAllWindows()
