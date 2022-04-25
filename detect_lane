@@ -139,9 +139,9 @@ frame_height = int(cap.get(4))
 #out is used for the main detection video
 #out2 is used for the different pipeline stages video
 if debug==0:
-    out = cv2.VideoWriter(path_out+"\outl.avi",cv2.VideoWriter_fourcc('M','J','P','G'),fps, (frame_width,frame_height))
+    out = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),fps, (frame_width,frame_height))
 else:
-    out2 = cv2.VideoWriter(path_out+"\outp.avi",cv2.VideoWriter_fourcc('M','J','P','G'),1, (frame_width,frame_height))
+    out2 = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),1, (frame_width,frame_height))
 
 
  
