@@ -139,6 +139,8 @@ if (cap.isOpened()== False):
 
 frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
+#out is used for the main detection video
+#out2 is used for the different pipeline stages video
 out = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),fps, (frame_width,frame_height))
 out2 = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),1, (frame_width,frame_height))
 
@@ -155,6 +157,11 @@ while(cap.isOpened()):
         frame_out = pipeline (frame)
         #output 
         out.write(cv2.cvtColor(frame_out[4], cv2.COLOR_BGR2RGB))
+        out2.write(frame_out[0])
+        out2.write(cv2.cvtColor(frame_out[1], cv2.COLOR_GRAY2RGB))
+        out2.write(cv2.cvtColor(frame_out[2], cv2.COLOR_GRAY2RGB))
+        out2.write(cv2.cvtColor(frame_out[3], cv2.COLOR_GRAY2RGB))
+        out2.write(cv2.cvtColor(frame_out[4], cv2.COLOR_BGR2RGB))
         # Press Q on keyboard to exit
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
