@@ -36,7 +36,7 @@ def src_bottom_points(img):
     edge_image=cv2.Canny(s,200,100)
     #calling a function to find the bottom source points 
     lv,lh,rv,rh=src_bottom_points(edge_image)
-    center_of_the_lane=(rh-lh)/2
+    center_of_the_lane=(rh+lh)/2
     print(center_of_the_lane)
     center_of_the_car=(img.shape[1])/2
     print(center_of_the_car)
