@@ -41,6 +41,7 @@ def src_bottom_points(img):
     center_of_the_car=(img.shape[1])/2
     print(center_of_the_car)
     s="vehicle is "
+    #1pixel = 0.0002645833m
     if (center_of_the_car-center_of_the_lane)>0:
         dist=(int)((center_of_the_car-center_of_the_lane)* 0.0002645833*1000)
         s+=str(dist/1000)+"m right of center"
