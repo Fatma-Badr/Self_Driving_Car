@@ -111,7 +111,7 @@ import sys
 
 argv = sys.argv
 path_in = argv[1]
-debug = int(argv[2])
+debug = (int)argv[2]
 path_out = argv[3]
 print(path_in)
 print(debug)
