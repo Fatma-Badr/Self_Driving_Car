@@ -107,7 +107,7 @@ def pipeline (img):
   
   
   #read and write video
-  import sys
+import sys
 
 argv = sys.argv
 path_in = argv[1]
