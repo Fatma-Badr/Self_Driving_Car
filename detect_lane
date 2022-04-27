@@ -28,7 +28,7 @@ def src_bottom_points(img):
     return j,i,k,l
     
     
- def distance(img):
+def distance(img):
     #convert image to HSL color space then use s channel
     hsl=cv2.cvtColor(img,cv2.COLOR_RGB2HLS)    
     s=hsl[:,:,2]
@@ -97,7 +97,7 @@ def pipeline (img):
               newArr[i][j]=original_image[i][j]
           else:
               newArr[i][j]=b[i][j]
-  //tranforming the image back to the original prespective
+  #tranforming the image back to the original prespective
   output = (cv2.merge((r,g,newArr))).astype(np.uint8)
   doutput=distance(image)
   # vis = np.concatenate((hls_image,output), axis=0)
