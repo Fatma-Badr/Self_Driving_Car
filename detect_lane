@@ -1,3 +1,18 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import cv2
+import glob
+
+### This function returns the prespective and inverse prespective matrix for a prespective transform
+def perspectiveTransform(srcPoints, dstPoints):
+    M = cv2.getPerspectiveTransform(srcPoints, dstPoints)
+    Minv = cv2.getPerspectiveTransform(dstPoints, srcPoints)
+    return M, Minv
+    
+### This function applies prespective transform to an image and returns the warped image
+def warpPerspective(img, imgSize, M):
+    return cv2.warpPerspective(img, M, imgSize, cv2.INTER_LINEAR)
+
 def src_bottom_points(img):
     mid_width=(int)((img.shape[1])/2)
     print(mid_width)
@@ -111,7 +126,7 @@ import sys
 
 argv = sys.argv
 path_in = argv[1]
-debug = (int)argv[2]
+debug = int(argv[2])
 path_out = argv[3]
 print(path_in)
 print(debug)
