@@ -65,6 +65,51 @@ def distance(img):
         s+=str(dist/1000)+"m left of center"
     print(s)    
     return s   
+def cars(image):
+    weights_path="Yolov3.weights"
+    config_path="Yolov3.cfg"
+    net = cv2.dnn.readNetFromDarknet(config_path, weights_path)
+    #     net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+    #     net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
+    #     input_image = cv2.imread(image)
+    img = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+    plt.imshow(img)
+    (h,w)=img.shape[:2]
+    names = list(net.getLayerNames())
+    layers_names = [names[i-1] for i in net.getUnconnectedOutLayers()]
+    blob = cv2.dnn.blobFromImage(img,1/255.0,(416,416),crop=False,swapRB=False)
+    net.setInput(blob)
+    #     start_time = time.time()
+    layers_output = net.forward(layers_names)
+    boxes = []
+    confidences = []
+    classIDs = []
+    for output in layers_output:
+        for detection in output:
+            scores = detection[5:]
+            classID = np.argmax(scores)
+            confidence = scores[classID]
+
+            if confidence > 0.85:
+                box = detection[:4]*np.array([w,h,w,h])
+                bx,by,bw,bh = box.astype("int")
+                x = int(bx - (bw/2))
+                y = int(by - (bh/2))
+                boxes.append([x,y,int(bw),int(bh)])
+                confidences.append(float(confidence))
+                classIDs.append(classID)
+    indexs = cv2.dnn.NMSBoxes(boxes,confidences,0.7,0.7)
+    labels_path="coco.names"
+    labels = open(labels_path).read().strip().split('\n')
+    if len(indexs) > 0:
+        for i in indexs.flatten():
+            (x,y) = [boxes[i][0],boxes[i][1]]
+            (w,h) = [boxes[i][2],boxes[i][3]]
+            cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
+            cv2.putText(img,"{}: {}".format(labels[classIDs[i]],confidences[i]),(x,y-5),cv2.FONT_HERSHEY_SIMPLEX,\
+                        0.5,(255,0,255),1)
+    plt.imshow(img)
+    return img
 
 
 def pipeline (img):
@@ -195,3 +240,5 @@ out.release()
 
 # Closes all the frames
 cv2.destroyAllWindows()
+
+
