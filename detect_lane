@@ -98,7 +98,7 @@ def cars(image):
                 boxes.append([x,y,int(bw),int(bh)])
                 confidences.append(float(confidence))
                 classIDs.append(classID)
-    indexs = cv2.dnn.NMSBoxes(boxes,confidences,0.7,0.7)
+    indexs = cv2.dnn.NMSBoxes(boxes,confidences,0.6,0.6)
     labels_path="coco.names"
     labels = open(labels_path).read().strip().split('\n')
     if len(indexs) > 0:
