@@ -71,6 +71,13 @@ def src_dst():
                       [200, 0],
                       [1000, 0]]).astype(np.float32)
     return srcPoints,dstPoints
+#this function draws the histogram of the binary image and the 2 starting points   
+def histogram(img):
+    h= np.sum(img[img.shape[0]//2:,:], axis=0)
+    mid=int(h.shape[0]//2)
+    leftbx = np.argmax(h[:mid])
+    rightbx = np.argmax(h[mid:]) + mid
+    return leftbx,rightbx    
 def src_bottom_points(img):
     mid_width=(int)((img.shape[1])/2)
     print(mid_width)
