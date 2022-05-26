@@ -168,7 +168,24 @@ def dist_(l,r):
     d = (1280 // 2 - (x_l+x_r)//2)*xpixel_to_m
     dd=int(d*1000)/1000
     return dd 
-
+#combine functions into a single function to create the pipeline
+def pipeline(img,mtx,dist):
+    im1=correct_dist(img,mtx,dist)
+    im2=sobel(im1,'x')
+    im3=find_s(im1)
+    im4=mix(im2,im3)
+    src,dst=src_dst()
+    m,miv=perspective(src,dst)
+    im5=apply_perspective(im4,m,im4.shape[::-1])
+    lx,rx=histogram(im5)
+    leftx, lefty, rightx, righty, im6=window(im5,lx,rx)
+    im7,im8,l,r=fit_poly(im5,lx,rx)
+    d=dist_(l,r)
+    im9=apply_perspective(im7,miv,im7.shape[::-1])
+    final_out=final(im1,im9)
+    s="The offset of the lane center from the center of the image: "
+    outputf=cv2.putText(img=final_out, text=s+str(d), org=(50, 150), fontFace=cv2.FONT_HERSHEY_TRIPLEX, fontScale=1, color=(0,0, 255),thickness=1)
+    return outputf,im1,im4,im5,im7,im8,im9
 def src_bottom_points(img):
     mid_width=(int)((img.shape[1])/2)
     print(mid_width)
@@ -268,7 +285,7 @@ def cars(image):
     return img
 
 
-def pipeline (img):
+def pipeline_ (img):
   #convert the image read to RGB
   image=cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
   #convert the image to HLS to get rid of shadows
