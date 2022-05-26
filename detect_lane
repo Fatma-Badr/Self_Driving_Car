@@ -59,6 +59,18 @@ def sobel(img,s_type):
     mix_im = np.zeros_like(img1)
     mix_im[(img1 == 1) | (img2 == 1)] = 1
     return mix_im
+#to get the approximated source_points and distination_points
+def src_dst():
+    srcPoints = np.array([[230,691],
+                      [1060,681],
+                      [600,445],
+                      [680,445]]).astype(np.float32)
+
+    dstPoints = np.array([[250, 700],
+                      [1000, 700],
+                      [200, 0],
+                      [1000, 0]]).astype(np.float32)
+    return srcPoints,dstPoints
 def src_bottom_points(img):
     mid_width=(int)((img.shape[1])/2)
     print(mid_width)
