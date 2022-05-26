@@ -461,7 +461,7 @@ while(cap.isOpened()):
 # the video capture object
 cap.release()
 out.release()
-out2.release()
+
 
  
 
