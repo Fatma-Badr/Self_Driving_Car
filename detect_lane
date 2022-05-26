@@ -126,6 +126,34 @@ def window(img,bl,br):
         if len(right_x) > min_pixels:
                 crightx = np.int32(np.mean(right_x))
     return leftx, lefty, rightx, righty, oimg
+#this function finds the equation of both curves of the lane and fills the region between them
+def fit_poly(pre,ml,mr):
+    leftx, lefty, rightx, righty, oimg =window(pre,ml,mr)
+    im=np.zeros_like(pre)
+    if len(lefty) > 1500:
+        left_fit = np.polyfit(lefty, leftx, 2)
+    if len(righty) > 1500:
+        right_fit = np.polyfit(righty, rightx, 2)
+    ploty = np.linspace(0, pre.shape[0]-1, pre.shape[0] )
+    
+    try:
+        left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
+        right_fitx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
+    except TypeError:
+        left_fitx = 1*ploty**2 + 1*ploty
+        right_fitx = 1*ploty**2 + 1*ploty
+        
+    oimg[lefty, leftx] = [0, 0, 255]
+    oimg[righty, rightx] = [0, 0, 255] 
+#     plt.plot(left_fitx, ploty, color='red')
+#     plt.plot(right_fitx, ploty, color='red')
+    
+    for i, y in enumerate(ploty):
+        l = int(left_fitx[i])
+        r = int(right_fitx[i])
+        y = int(y)
+        cv2.line(im, (l, y), (r, y), 1)
+    return im,oimg,left_fit,right_fit
 def src_bottom_points(img):
     mid_width=(int)((img.shape[1])/2)
     print(mid_width)
