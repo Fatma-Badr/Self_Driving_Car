@@ -177,6 +177,7 @@ def dist_(l,r):
     dd=int(d*1000)/1000
     return dd 
 #combine functions into a single function to create the pipeline
+
 def pipeline(img,mtx,dist):
     im1=correct_dist(img,mtx,dist)
     im2=sobel(im1,'x')
