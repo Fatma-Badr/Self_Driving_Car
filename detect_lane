@@ -33,6 +33,18 @@ def camera_cal():
 def correct_dist(img,mtx,dist):
     cimg = cv2.undistort(img, mtx, dist, None, mtx)
     return cimg
+#this function calculates sobelex or sobely and applies threshold on it    
+def sobel(img,s_type):
+    gimg=cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
+    if(s_type=='x'):
+        sobel = cv2.Sobel(gimg, cv2.CV_64F, 1, 0)
+    elif(s_type=='y'):
+        sobel = cv2.Sobel(gimg, cv2.CV_64F, 0, 1)
+    abs_sobel = np.absolute(sobel)
+    scaled_sobel = 255 * ((abs_sobel) / np.max(abs_sobel))
+    sbinary = np.zeros_like(scaled_sobel)
+    sbinary[(scaled_sobel > 10) & (scaled_sobel < 100)] = 1
+    return sbinary    
 def src_bottom_points(img):
     mid_width=(int)((img.shape[1])/2)
     print(mid_width)
