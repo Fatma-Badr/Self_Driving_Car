@@ -77,7 +77,55 @@ def histogram(img):
     mid=int(h.shape[0]//2)
     leftbx = np.argmax(h[:mid])
     rightbx = np.argmax(h[mid:]) + mid
-    return leftbx,rightbx    
+    return leftbx,rightbx  
+# sliding window function
+def window(img,bl,br):
+    oimg=np.dstack((img,img,img))
+    no_of_windows=9
+    margin=130
+    min_pixels=50
+    window_height =int(img.shape[0]//no_of_windows)
+    nonzero = img.nonzero()
+    nonzero_y = np.array(nonzero[0])
+    nonzero_x = np.array(nonzero[1])
+    cleftx=bl
+    crightx=br
+    
+    leftx, lefty, rightx, righty = [], [], [], []
+    for window in range(0,no_of_windows):
+        wytop = img.shape[0] - (window+1)*window_height
+        wybottom = img.shape[0] - window*window_height
+        centerl=(cleftx,wybottom)
+        centerr=(crightx,wybottom)
+        ltopleft=(centerl[0]-margin,wytop)
+        lbottomright=(centerl[0]+margin,wybottom)
+        rtopleft=(centerr[0]-margin,wytop)
+        
+        rbottomright=(centerr[0]+margin,wybottom)
+        
+        #draw windows
+        cv2.rectangle(oimg,ltopleft,lbottomright,(0,255,0), 4) 
+        cv2.rectangle(oimg,rtopleft,rbottomright,(0,255,0), 4)
+        #calculate pixels in windows
+        lcondx = (ltopleft[0] <= nonzero_x) & (nonzero_x <= lbottomright[0])
+        lcondy = (ltopleft[1] <= nonzero_y) & (nonzero_y <= lbottomright[1])
+        left_x=nonzero_x[lcondx&lcondy]
+        left_y=nonzero_y[lcondx&lcondy]
+        rcondx = (rtopleft[0] <= nonzero_x) & (nonzero_x <= rbottomright[0])
+        rcondy = (rtopleft[1] <= nonzero_y) & (nonzero_y <= rbottomright[1])
+        right_x=nonzero_x[rcondx&rcondy]
+        right_y=nonzero_y[rcondx&rcondy]
+        #append in lists
+        leftx.extend(left_x)
+        lefty.extend(left_y)
+        rightx.extend(right_x)
+        righty.extend(right_y)
+        # check for update
+        if len(left_x) > min_pixels:
+                cleftx = np.int32(np.mean(left_x))
+        if len(right_x) > min_pixels:
+                crightx = np.int32(np.mean(right_x))
+    return leftx, lefty, rightx, righty, oimg
 def src_bottom_points(img):
     mid_width=(int)((img.shape[1])/2)
     print(mid_width)
