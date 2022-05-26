@@ -369,8 +369,9 @@ def merge_images(img):
 
 
 #read and write video
-import sys
 
+
+import sys
 argv = sys.argv
 path_in = argv[1]
 debug = int(argv[2])
@@ -379,9 +380,14 @@ print(path_in)
 print(debug)
 print(path_out)
 
-#collect frames here
-col_images=[]
+# path_in = "project_video.mp4"
+# path_out = "bassantmah.avi"
+# debug = 0
 
+
+col_images=[]
+# path="project_video.mp4"
+# debug=1 
 
 # Create a VideoCapture object and read from input file
 cap = cv2.VideoCapture(path_in)
@@ -399,48 +405,57 @@ if (cap.isOpened()== False):
 
 frame_width = int(cap.get(3))
 frame_height = int(cap.get(4))
-#out is used for the main detection video
-#out2 is used for the different pipeline stages video
-if debug==0:
-    out = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),fps, (frame_width,frame_height))
-else:
-    out2 = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),1, (frame_width,frame_height))
 
+
+out = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),fps, (frame_width,frame_height))
+out2 = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),fps, (1280, 1200))
 
  
+mt,ds=camera_cal()
 
 while(cap.isOpened()):
     
-    #read the video frame by frame
-    # Capture frame-by-frame
     
+    # Capture frame-by-frame
     ret, frame = cap.read()
     if ret == True:
         col_images.append(frame)
-        frame_out = pipeline (frame)
-        #output 
+        mm=cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+        
+        frame_out = pipeline (mm,mt,ds)
+
         if debug==0:
-            out.write(cv2.cvtColor(frame_out[4], cv2.COLOR_BGR2RGB))
-        else:    
-            out2.write(frame_out[0])
-            out2.write(cv2.cvtColor(frame_out[1], cv2.COLOR_GRAY2RGB))
-            out2.write(cv2.cvtColor(frame_out[2], cv2.COLOR_GRAY2RGB))
-            out2.write(cv2.cvtColor(frame_out[3], cv2.COLOR_GRAY2RGB))
-            out2.write(cv2.cvtColor(frame_out[4], cv2.COLOR_BGR2RGB))
+            frame_out = cars(frame_out[0])
+            out.write(frame_out)
+        else: 
+            pipeline_out = merge_images(frame_out)
+#             out2 = cv2.VideoWriter(path_out,cv2.VideoWriter_fourcc('M','J','P','G'),fps - 5, (frame_width,frame_height))
+            pipeline_out=cv2.cvtColor(pipeline_out,cv2.COLOR_BGR2RGB)
+            out2.write(pipeline_out)
+#             plt.figure(figsize=(10,10))
+#             image = pipeline_out
+#             plt.imshow(image)
+#             plt.show()
+
         # Press Q on keyboard to exit
         if cv2.waitKey(25) & 0xFF == ord('q'):
             break
+
+ 
 
     # Break the loop
     else:
         break
 
+ 
+
 # When everything done, release
 # the video capture object
 cap.release()
 out.release()
+out2.release()
+
+ 
 
 # Closes all the frames
 cv2.destroyAllWindows()
-
-
