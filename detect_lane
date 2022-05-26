@@ -54,6 +54,11 @@ def sobel(img,s_type):
     sbinary = np.zeros_like(s)
     sbinary[(s > 180) & (s < 255)] = 1
     return sbinary
+ # this function combines two images
+ def mix(img1,img2):
+    mix_im = np.zeros_like(img1)
+    mix_im[(img1 == 1) | (img2 == 1)] = 1
+    return mix_im
 def src_bottom_points(img):
     mid_width=(int)((img.shape[1])/2)
     print(mid_width)
