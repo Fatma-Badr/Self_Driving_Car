@@ -339,7 +339,36 @@ def pipeline_ (img):
   return [hls_image,s_channel ,scaled_sobel,original_image,outputf]
   
   
-  #read and write video
+  
+  
+#merging images
+
+def vconcat_resize_min(im_list, interpolation=cv2.INTER_CUBIC):
+    w_min = min(im.shape[1] for im in im_list)
+    im_list_resize = [cv2.resize(im, (w_min, int(im.shape[0] * w_min / im.shape[1])), interpolation=interpolation)
+                      for im in im_list]
+    return cv2.vconcat(im_list_resize)
+
+
+def merge_images(img):
+    print(img[1].shape, img[2].shape, img[3].shape, img[4].shape, img[5].shape, img[6].shape)
+    gray_three1 = cv2.merge([img[2],img[2],img[2]]).astype('uint8')
+    gray_three1*= 255
+    gray_three2 = cv2.merge([img[3],img[3],img[3]]).astype('uint8')
+    gray_three2*= 255
+    m0=np.hstack((img[1], gray_three1, gray_three2))
+    #
+    gray_three3 = cv2.merge([img[4],img[4],img[4]]).astype('uint8')
+    gray_three3*= 255
+    gray_three4 = cv2.merge([img[6],img[6],img[6]]).astype('uint8')
+    gray_three4*= 255
+    m1=np.hstack((gray_three3, img[5].astype('uint8'), gray_three4))
+    im_v_resize = vconcat_resize_min([img[0], m0, m1])
+    cv2.imwrite('data/dst/opencv_vconcat_resize.jpg', im_v_resize)
+    return im_v_resize;
+
+
+#read and write video
 import sys
 
 argv = sys.argv
