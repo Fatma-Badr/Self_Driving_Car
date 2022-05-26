@@ -1,25 +1,30 @@
-import matplotlib.pyplot as plt
+
 import numpy as np
 import cv2
 import glob
 import numpy as np
 import cv2
 import glob
-import numpy as np
 import time
 import cv2
 import os
 import glob
+import matplotlib.pyplot as plt
+
 
 ### This function returns the prespective and inverse prespective matrix for a prespective transform
-def perspective(srcPoints, dstPoints):
-    M = cv2.getPerspectiveTransform(srcPoints, dstPoints)
-    Minv = cv2.getPerspectiveTransform(dstPoints, srcPoints)
-    return M, Minv
-    
+def perspective(spoints,dpoints):
+    m= cv2.getPerspectiveTransform(spoints,dpoints)
+    minv=cv2.getPerspectiveTransform(dpoints,spoints)
+    return m,minv
+
+
 ### This function applies prespective transform to an image and returns the warped image
-def apply_perspective(img, imgSize, M):
-    return cv2.warpPerspective(img, M, imgSize, cv2.INTER_LINEAR)
+def apply_perspective(image,m,img_size):
+    return cv2.warpPerspective(image,m,img_size,cv2.INTER_LINEAR)
+    
+
+
 #camera_cal takes a set of chessboards and uses it to return the parameters of the camera    
 def camera_cal():
     objectpoints=[]
@@ -177,7 +182,6 @@ def dist_(l,r):
     dd=int(d*1000)/1000
     return dd 
 #combine functions into a single function to create the pipeline
-
 def pipeline(img,mtx,dist):
     im1=correct_dist(img,mtx,dist)
     im2=sobel(im1,'x')
@@ -380,18 +384,18 @@ def merge_images(img):
 #read and write video
 
 
-import sys
-argv = sys.argv
-path_in = argv[1]
-debug = int(argv[2])
-path_out = argv[3]
-print(path_in)
-print(debug)
-print(path_out)
+# import sys
+# argv = sys.argv
+# path_in = argv[1]
+# debug = int(argv[2])
+# path_out = argv[3]
+# print(path_in)
+# print(debug)
+# print(path_out)
 
-# path_in = "project_video.mp4"
-# path_out = "bassantmah.avi"
-# debug = 0
+path_in = "project_video.mp4"
+path_out = "bassantmah.avi"
+debug = 0
 
 
 col_images=[]
@@ -462,7 +466,7 @@ while(cap.isOpened()):
 # the video capture object
 cap.release()
 out.release()
-
+out2.release()
 
  
 
