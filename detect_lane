@@ -160,6 +160,15 @@ def final(img,fimg):
     r,g,b=cv2.split(ff)
     b[fimg == 1] = 255
     return cv2.merge((r,g,b))
+#distance function
+def dist_(l,r):   
+    xpixel_to_m = 3.7/700
+    x_l = np.dot(l, [700**2, 700, 1])
+    x_r = np.dot(r, [700**2, 700, 1])
+    d = (1280 // 2 - (x_l+x_r)//2)*xpixel_to_m
+    dd=int(d*1000)/1000
+    return dd 
+
 def src_bottom_points(img):
     mid_width=(int)((img.shape[1])/2)
     print(mid_width)
