@@ -384,18 +384,18 @@ def merge_images(img):
 #read and write video
 
 
-# import sys
-# argv = sys.argv
-# path_in = argv[1]
-# debug = int(argv[2])
-# path_out = argv[3]
-# print(path_in)
-# print(debug)
-# print(path_out)
+import sys
+argv = sys.argv
+path_in = argv[1]
+debug = int(argv[2])
+path_out = argv[3]
+print(path_in)
+print(debug)
+print(path_out)
 
-path_in = "project_video.mp4"
-path_out = "bassantmah.avi"
-debug = 0
+# path_in = "project_video.mp4"
+# path_out = "bassantmah.avi"
+# debug = 0
 
 
 col_images=[]
