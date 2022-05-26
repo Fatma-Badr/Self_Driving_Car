@@ -29,7 +29,10 @@ def camera_cal():
     gg=cv2.cvtColor(plt.imread(images[0]),cv2.COLOR_RGB2GRAY)        
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objectpoints, iamgepoints, gg.shape[::-1], None, None)
     return mtx,dist
-    
+#this finction takes an image and return its undistorted version 
+def correct_dist(img,mtx,dist):
+    cimg = cv2.undistort(img, mtx, dist, None, mtx)
+    return cimg
 def src_bottom_points(img):
     mid_width=(int)((img.shape[1])/2)
     print(mid_width)
