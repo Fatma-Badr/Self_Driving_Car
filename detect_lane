@@ -154,6 +154,12 @@ def fit_poly(pre,ml,mr):
         y = int(y)
         cv2.line(im, (l, y), (r, y), 1)
     return im,oimg,left_fit,right_fit
+#draw the filled region in the original image
+def final(img,fimg):
+    ff=np.copy(img)
+    r,g,b=cv2.split(ff)
+    b[fimg == 1] = 255
+    return cv2.merge((r,g,b))
 def src_bottom_points(img):
     mid_width=(int)((img.shape[1])/2)
     print(mid_width)
